@@ -90,3 +90,529 @@ button{cursor:pointer;border:0;color:inherit}
 .range{width:100%;accent-color:var(--purple)}
 .primary{background:linear-gradient(135deg,#8367ff,#5e3de8);padding:11px 16px;border-radius:11px;font-weight:700;box-shadow:0 8px 22px #694fff33}
 .primary:disabled{opacity:.45;cursor:not-allowed}
+.modal{position:fixed;inset:0;background:#0009;display:none;place-items:center;padding:20px;z-index:20}
+.modal.show{display:grid}
+.modal-card{max-width:550px;width:100%;padding:25px}
+.modal-card h2{margin-top:0}
+.close{float:right;background:transparent;color:var(--muted);font-size:22px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:#24283a;border:1px solid var(--line);padding:11px 16px;border-radius:999px;opacity:0;pointer-events:none;transition:.25s;z-index:30}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.danger{color:#ff9aa1!important}
+.folder-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;margin-bottom:18px}
+.folder-name{font-weight:700}
+.folder-status{color:var(--muted);font-size:12px}
+.folder-actions{display:flex;align-items:center;gap:10px}
+.about{display:grid;gap:18px}
+.about-hero{padding:28px}
+.about-hero h2{font-size:28px;margin:0 0 8px}
+.about-hero p{color:var(--muted);font-size:16px;max-width:900px;margin:0}
+.about-card{padding:20px}
+.about-card h3{margin:0 0 10px;color:#fff}
+.about-card p{color:var(--muted);margin:8px 0}
+.about-card ul{margin:10px 0 0;padding-left:20px;color:var(--muted)}
+.about-card li{margin:8px 0}
+.about-card li strong{color:#fff}
+.about-wide{grid-column:1/-1}
+.about-note{border-left:3px solid var(--purple);padding:14px 16px;background:#17132b;border-radius:10px;color:var(--muted)}
+
+@media(max-width:900px){
+  .side{width:72px;padding:20px 10px}
+  .brand strong,.pro,.nav button em,.side-foot{display:none}
+  .nav button{justify-content:center}
+  .main{padding:20px}
+  .hero,.editor{grid-template-columns:1fr}
+  .features{grid-template-columns:repeat(2,1fr)}
+}
+
+@media(max-width:560px){
+  .top h1{font-size:22px}
+  .status{display:none}
+  .studio{padding:14px}
+  .studio-controls{flex-wrap:wrap}
+  .settings{padding:14px}
+  .features{grid-template-columns:1fr 1fr}
+  .feature{padding:12px}
+  .side{position:fixed;bottom:0;left:0;right:0;width:auto;height:63px;z-index:10;flex-direction:row;padding:7px 10px;border-top:1px solid var(--line);border-right:0}
+  .brand,.side-foot{display:none}
+  .nav{width:100%;display:flex;justify-content:space-around}
+  .nav button{padding:8px 13px}
+  .main{padding-bottom:78px}
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+<aside class="side">
+  <div class="brand">
+    <div class="logo"></div>
+    <strong>Recordify</strong>
+    <span class="pro">PRO</span>
+  </div>
+
+  <nav class="nav">
+    <button class="active" data-page="studio">
+      <span>▣</span>
+      <em>Gravar</em>
+    </button>
+
+    <button data-page="editor">
+      <span>✂</span>
+      <em>Editor</em>
+    </button>
+
+    <button data-page="library">
+      <span>▣</span>
+      <em>Biblioteca</em>
+    </button>
+
+    <button data-page="about">
+      <span>ⓘ</span>
+      <em>Sobre</em>
+    </button>
+  </nav>
+
+  <div class="side-foot">
+    Tudo processado no seu dispositivo<br>
+    Recordify Pro Web 1.0
+  </div>
+</aside>
+
+<main class="main">
+<header class="top">
+  <div>
+    <h1 id="pageTitle">Gravar tela</h1>
+    <p id="pageSub">Capture vídeos, aulas e jogos com qualidade profissional.</p>
+  </div>
+
+  <div id="status" class="status">
+    Pronto para criar
+  </div>
+</header>
+
+<section id="studio" class="page active">
+  <div class="hero">
+
+    <div class="card studio" id="studioCard">
+      <div class="preview empty" id="preview">
+        <canvas id="recordCanvas" width="1280" height="720"></canvas>
+
+        <div class="rec-bubble">
+          <i class="dot"></i>
+          <span id="timer">00:00</span>
+          <button id="bubbleStop" title="Parar">■</button>
+        </div>
+
+        <video id="importPreview" controls style="display:none;width:100%;height:100%;object-fit:contain"></video>
+      </div>
+
+      <div class="studio-controls">
+        <div>
+          <div class="control-label">Qualidade</div>
+
+          <select id="quality" class="select">
+            <option value="720">HD 720p</option>
+            <option value="1080" selected>Full HD 1080p</option>
+            <option value="source">Original</option>
+          </select>
+        </div>
+
+        <button class="big-record start" id="recordBtn" title="Iniciar gravação">
+          <span></span>
+        </button>
+
+        <button class="primary" id="importBtn" title="Escolher vídeo">
+          Escolher vídeo
+        </button>
+
+        <input id="fileInput" type="file" accept="video/*" hidden>
+
+        <div class="actions">
+          <button class="icon-btn" id="screenshotBtn" title="Capturar tela">
+            Captura
+          </button>
+
+          <button class="icon-btn" id="drawBtn" title="Desenhar ao vivo">
+            Desenhar
+          </button>
+
+          <button class="icon-btn" id="openLibraryBtn" title="Abrir biblioteca">
+            Biblioteca
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card settings">
+      <h3>Configurações de gravação</h3>
+
+      <div class="setting">
+        <label>Áudio da gravação</label>
+
+        <div class="chips" id="audioModes">
+          <button class="chip" data-audio="none">Sem áudio</button>
+          <button class="chip" data-audio="mic">Microfone</button>
+          <button class="chip" data-audio="screen">Áudio da tela</button>
+          <button class="chip on" data-audio="both">Tela + microfone</button>
+        </div>
+
+        <p class="hint">
+          O áudio interno depende do sistema e do navegador. O microfone pedirá autorização.
+        </p>
+      </div>
+
+      <div class="setting">
+        <label>
+          Facecam
+          <button class="toggle on" id="faceToggle">
+            <i></i>
+          </button>
+        </label>
+
+        <p class="hint">
+          A câmera será solicitada para mostrar seu rosto na gravação.
+        </p>
+      </div>
+
+      <div class="setting">
+        <label>Permissões do aparelho</label>
+
+        <button class="primary" id="permissionBtn" style="margin-top:10px;width:100%">
+          Permitir câmera e áudio
+        </button>
+
+        <p class="hint">
+          Toque aqui para autorizar câmera e microfone antes de iniciar.
+        </p>
+      </div>
+
+      <div class="setting">
+        <label>
+          Sem marca-d’água
+          <span style="color:var(--green)">✓</span>
+        </label>
+
+        <p class="hint">
+          Seus vídeos continuam sem marca do Recordify.
+        </p>
+      </div>
+
+      <div class="setting">
+        <label>Privacidade</label>
+
+        <button class="secondary" id="helpBtn" style="margin-top:10px;width:100%">
+          Como funciona?
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="features">
+    <div class="card feature">
+      <span>◉</span>
+      <b>Gravação de tela</b>
+      <small>Inicie pelo botão vermelho.</small>
+    </div>
+
+    <div class="card feature">
+      <span>▣</span>
+      <b>Importação local</b>
+      <small>Escolha vídeos do seu aparelho.</small>
+    </div>
+
+    <div class="card feature">
+      <span>✂</span>
+      <b>Editor rápido</b>
+      <small>Corte o início e o fim.</small>
+    </div>
+
+    <div class="card feature">
+      <span>🎙</span>
+      <b>Áudio e câmera</b>
+      <small>Autorize quando quiser gravar.</small>
+    </div>
+  </div>
+</section>
+
+<section id="editor" class="page">
+  <div class="editor">
+    <div class="card editor-preview">
+      <div class="empty-state" id="editorEmpty">
+        Selecione um vídeo na Biblioteca para editar.
+      </div>
+
+      <video id="editorVideo" controls style="display:none"></video>
+    </div>
+
+    <div class="card editor-side">
+      <h3>Editor rápido</h3>
+
+      <p class="hint">
+        Corte o início e o fim sem alterar o arquivo original.
+      </p>
+
+      <label class="control-label">
+        Início
+        <output id="startOut">0.0s</output>
+      </label>
+
+      <input id="startRange" class="range" type="range" min="0" max="1" step="0.1" value="0">
+
+      <label class="control-label" style="display:block;margin-top:18px">
+        Fim
+        <output id="endOut">0.0s</output>
+      </label>
+
+      <input id="endRange" class="range" type="range" min="0" max="1" step="0.1" value="1">
+
+      <button id="trimBtn" class="primary" style="width:100%;margin-top:24px" disabled>
+        Exportar trecho
+      </button>
+
+      <p id="editorHint" class="hint"></p>
+    </div>
+  </div>
+</section>
+
+<section id="library" class="page">
+  <div class="section-head">
+    <h2>Sua biblioteca</h2>
+    <button class="secondary" id="refreshBtn">Atualizar</button>
+  </div>
+
+  <div class="card folder-bar">
+    <div>
+      <div class="folder-name">📁 Pasta Vídeos</div>
+      <div class="folder-status" id="folderStatus">
+        Arquivos guardados na biblioteca local do aplicativo.
+      </div>
+    </div>
+
+    <div class="folder-actions">
+      <button class="primary" id="chooseFolderBtn">
+        Escolher pasta
+      </button>
+    </div>
+  </div>
+
+  <div id="libraryGrid" class="library"></div>
+</section>
+
+<section id="about" class="page">
+  <div class="about">
+
+    <div class="card about-hero">
+      <h2>Gravador de tela e vídeo</h2>
+
+      <p>
+        Gravador de tela, gravar vídeo - Recordify é um aplicativo de gravar tela e aplicativo de fazer vídeo poderoso e fácil de usar. Ele ajuda você a gravar vídeos, tutoriais, jogos, chamadas de vídeo e todos os momentos que desejar com facilidade. Com gravação nítida e edição intuitiva, o Recordify tem tudo para criar seus vídeos.
+      </p>
+    </div>
+
+    <div class="card about-card">
+      <h3>🔥 Gravador de Tela Poderoso 🔥</h3>
+
+      <ul>
+        <li><strong>🌟 Gravador HD e FHD:</strong> capture cada detalhe em 1080p, 16 Mbps e até 120 FPS, conforme o suporte do dispositivo.</li>
+        <li><strong>🌟 Gravador de Tela com Áudio:</strong> grave a tela com áudio interno, som do microfone ou ambos.</li>
+        <li><strong>🌟 Gravação com Facecam:</strong> adicione seu rosto às gravações para criar vídeos de reação e aulas.</li>
+        <li><strong>🌟 Desenho e Anotações ao Vivo:</strong> explique ideias complexas com a ferramenta Escova do Recordify.</li>
+        <li><strong>🌟 Bola Flutuante com Um Toque:</strong> inicie, pause e retome a gravação de tela com apenas um toque.</li>
+        <li><strong>🌟 Captura de Tela Rápida:</strong> capture os melhores momentos usando a bola flutuante.</li>
+        <li><strong>🌟 Gravador de Vídeo em Segundo Plano:</strong> continue gravando em segundo plano para ter mais flexibilidade.</li>
+      </ul>
+    </div>
+
+    <div class="card about-card">
+      <h3>🚀 Aplicativo de Fazer Vídeo Portátil</h3>
+
+      <ul>
+        <li><strong>Editor de Vídeo Integrado:</strong> corte, recorte, gire e ajuste suas gravações antes de compartilhar.</li>
+        <li><strong>Gravador de Jogos:</strong> capture partidas e vitórias com fluidez.</li>
+        <li><strong>Gravador de Chamadas de Vídeo:</strong> grave videochamadas importantes e reuniões online.</li>
+        <li><strong>Sem Limite de Tempo:</strong> grave vídeo pelo tempo que precisar.</li>
+        <li><strong>Sem Marca d'Água:</strong> compartilhe suas criações sem marcas d'água.</li>
+        <li><strong>Compartilhamento Fácil:</strong> compartilhe vídeos no YouTube ou com amigos.</li>
+        <li><strong>Gravador de Tela para Android:</strong> funciona bem em dispositivos Android e é uma ótima opção para celulares Samsung.</li>
+      </ul>
+    </div>
+
+    <div class="card about-card">
+      <h3>✅ Captura de Tela Clara e Suave</h3>
+
+      <p>
+        Com o Recordify, o aplicativo de gravar vídeo, você pode capturar sua tela e imagens com excepcional clareza em HD e fluidez. Os parâmetros também podem ser definidos como adaptáveis ou conforme sua preferência.
+      </p>
+
+      <h3>✅ Editor de Vídeo Multifuncional</h3>
+
+      <p>
+        Quer editar seu vídeo e postá-lo no YouTube após a gravação? Corte-o para extrair as melhores partes, recorte-o para remover a barra de status superior ou gire-o para alternar entre os modos paisagem e retrato.
+      </p>
+    </div>
+
+    <div class="card about-card">
+      <h3>✅ Bola Flutuante com Um Toque</h3>
+
+      <p>
+        Com apenas um toque na bola flutuante, você pode iniciar, pausar e retomar a gravação de tela, além de tirar capturas de tela. Você também pode ocultar a bola flutuante quando não precisar dela.
+      </p>
+    </div>
+
+    <div class="card about-card">
+      <h3>✅ Gravador de Tela com Facecam</h3>
+
+      <p>
+        Abra a facecam e mostre seu rosto na tela para tutoriais, vídeos de jogos e apresentações envolventes. Você criará vídeos imersivos, cheios de reações reais com a facecam.
+      </p>
+    </div>
+
+    <div class="card about-card">
+      <h3>✅ Gravador de Tela com Escova</h3>
+
+      <p>
+        Com os recursos de escova e facecam, você pode explicar conceitos usando desenhos na tela e envolver os alunos com suas expressões faciais simultaneamente.
+      </p>
+    </div>
+
+    <div class="card about-card">
+      <h3>✅ Grave e Compartilhe com Facilidade</h3>
+
+      <p>
+        Você pode capturar vídeos de alta qualidade com facilidade, fazer anotações com ferramentas e compartilhar suas criações com seus amigos. Baixe nosso aplicativo de gravar vídeo e simplifique sua experiência de gravação agora!
+      </p>
+
+      <p>
+        <strong>
+          *Todos os recursos de gravação de tela do Gravador de tela, Gravar vídeo - Recordify são gratuitos para usar.
+        </strong>
+      </p>
+
+      <p>
+        Suas sugestões ou feedbacks são importantes para nós.
+      </p>
+    </div>
+
+    <div class="about-note">
+      <strong>Dicas:</strong><br>
+      • Respeitamos todos os direitos autorais. Por favor, confirme que o conteúdo foi autorizado antes de gravar, transmitir ou compartilhar.
+    </div>
+  </div>
+</section>
+
+</main>
+</div>
+
+<div id="helpModal" class="modal">
+  <div class="card modal-card">
+    <button class="close" id="closeHelp">×</button>
+
+    <h2>Como funciona</h2>
+
+    <p>
+      O botão vermelho inicia a gravação da tela. O navegador pedirá autorização para escolher a tela ou janela que será gravada. No Android, use Chrome ou Edge atualizado e abra o app por HTTPS. O iPhone/Safari pode não oferecer captura de tela para páginas web.
+    </p>
+
+    <p>
+      Você pode autorizar a câmera e o áudio pelo botão de permissões. A facecam e o áudio são usados somente durante a gravação.
+    </p>
+
+    <p>
+      Também é possível usar <b>Escolher vídeo</b> para importar um arquivo já salvo no aparelho.
+    </p>
+
+    <p>
+      As gravações ficam na biblioteca local e nada é enviado automaticamente para um servidor.
+    </p>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+(() => {
+'use strict';
+
+const $ = s => document.querySelector(s);
+const \(\) = s => [...document.querySelectorAll(s)];
+
+const state = {
+  audio:'both',
+  face:true,
+  drawing:false,
+  recording:false,
+  screen:null,
+  mic:null,
+  faceStream:null,
+  canvasStream:null,
+  recorder:null,
+  chunks:[],
+  started:0,
+  timer:null,
+  drawLoop:null,
+  strokes:[],
+  currentStroke:null,
+  selected:null,
+  assets:[],
+  videoDirectory:null
+};
+
+const canvas = $('#recordCanvas');
+const ctx = canvas.getContext('2d');
+
+const screenVideo = document.createElement('video');
+const faceVideo = document.createElement('video');
+
+screenVideo.muted = true;
+faceVideo.muted = true;
+screenVideo.playsInline = true;
+faceVideo.playsInline = true;
+
+const DB = 'recordify-pro-web';
+const STORE = 'assets';
+
+function toast(msg){
+  const t = $('#toast');
+  t.textContent = msg;
+  t.classList.add('show');
+
+  setTimeout(() => {
+    t.classList.remove('show');
+  },3000);
+}
+
+function db(){
+  return new Promise((res,rej) => {
+    const r = indexedDB.open(DB,1);
+
+    r.onupgradeneeded = () => {
+      r.result.createObjectStore(STORE,{keyPath:'id'});
+    };
+
+    r.onsuccess = () => res(r.result);
+    r.onerror = () => rej(r.error);
+  });
+}
+
+async function putAsset(blob,type,name){
+  const item = {
+    id:crypto.randomUUID ? crypto.randomUUID() : Date.now() + '',
+    blob,
+    type,
+    name,
+    created:Date.now(),
+    size:blob.size
+  };
+
+  const d = await db();
+
+  await new Promise((res,rej) => {
+    const tx = d.transaction(STORE,'readwrite');
+
+    tx.objectStore(STORE).put(item);
+    tx.oncomplete = res;
+    tx.onerror = () => rej(tx.error);
+  });
+
+  return item;
