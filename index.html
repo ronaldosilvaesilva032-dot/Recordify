@@ -6,119 +6,592 @@
 <meta name="theme-color" content="#0b0c12">
 <meta name="description" content="Recordify Pro — gravador de tela e editor de vídeos no dispositivo.">
 <title>Recordify Pro — Editor de vídeos</title>
+
 <style>
 :root{--bg:#0b0c12;--panel:#141621;--panel2:#1b1e2b;--line:#2a2e40;--text:#f8f8fb;--muted:#9ca2b7;--purple:#7957ff;--purple2:#a78bfa;--red:#ff5260;--green:#52e0a0;--shadow:0 18px 55px #0007}
+
 *{box-sizing:border-box}
-body{margin:0;background:radial-gradient(circle at 20% 0,#25204a 0,#0b0c12 36rem);color:var(--text);font:15px/1.45 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif}
+
+body{
+  margin:0;
+  background:radial-gradient(circle at 20% 0,#25204a 0,#0b0c12 36rem);
+  color:var(--text);
+  font:15px/1.45 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif
+}
+
 button,select,input{font:inherit}
 button{cursor:pointer;border:0;color:inherit}
+
 .app{min-height:100vh;display:flex}
-.side{width:245px;background:#0e1019cc;border-right:1px solid var(--line);padding:25px 16px;display:flex;flex-direction:column;gap:26px;backdrop-filter:blur(18px)}
-.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px}
-.logo{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#9279ff,#6043e9);display:grid;place-items:center;box-shadow:0 8px 25px #7055ff55}
-.logo:after{content:"";width:0;height:0;border-top:8px solid transparent;border-bottom:8px solid transparent;border-left:13px solid white;margin-left:3px}
-.pro{font-size:11px;color:#d9d2ff;margin-left:2px}
+
+.side{
+  width:245px;
+  background:#0e1019cc;
+  border-right:1px solid var(--line);
+  padding:25px 16px;
+  display:flex;
+  flex-direction:column;
+  gap:26px;
+  backdrop-filter:blur(18px)
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-weight:800;
+  font-size:20px
+}
+
+.logo{
+  width:38px;
+  height:38px;
+  border-radius:12px;
+  background:linear-gradient(135deg,#9279ff,#6043e9);
+  display:grid;
+  place-items:center;
+  box-shadow:0 8px 25px #7055ff55
+}
+
+.logo:after{
+  content:"";
+  width:0;
+  height:0;
+  border-top:8px solid transparent;
+  border-bottom:8px solid transparent;
+  border-left:13px solid white;
+  margin-left:3px
+}
+
+.pro{
+  font-size:11px;
+  color:#d9d2ff;
+  margin-left:2px
+}
+
 .nav{display:grid;gap:8px}
-.nav button{background:transparent;text-align:left;color:var(--muted);padding:12px 14px;border-radius:12px;display:flex;gap:12px;align-items:center}
-.nav button.active,.nav button:hover{background:#252039;color:#fff}
-.nav span{font-size:19px;width:22px;text-align:center}
-.side-foot{margin-top:auto;color:var(--muted);font-size:12px}
-.main{flex:1;min-width:0;padding:26px clamp(18px,4vw,56px) 50px}
-.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px}
-.top h1{font-size:27px;margin:0 0 3px}
-.top p{margin:0;color:var(--muted)}
-.status{border:1px solid var(--line);border-radius:999px;padding:8px 13px;color:var(--muted);background:#161824}
-.status.live{color:#ffd5d8;border-color:#a93e49;background:#3a1820}
+
+.nav button{
+  background:transparent;
+  text-align:left;
+  color:var(--muted);
+  padding:12px 14px;
+  border-radius:12px;
+  display:flex;
+  gap:12px;
+  align-items:center
+}
+
+.nav button.active,.nav button:hover{
+  background:#252039;
+  color:#fff
+}
+
+.nav span{
+  font-size:19px;
+  width:22px;
+  text-align:center
+}
+
+.side-foot{
+  margin-top:auto;
+  color:var(--muted);
+  font-size:12px
+}
+
+.main{
+  flex:1;
+  min-width:0;
+  padding:26px clamp(18px,4vw,56px) 50px
+}
+
+.top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:28px
+}
+
+.top h1{
+  font-size:27px;
+  margin:0 0 3px
+}
+
+.top p{
+  margin:0;
+  color:var(--muted)
+}
+
+.status{
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:8px 13px;
+  color:var(--muted);
+  background:#161824
+}
+
+.status.live{
+  color:#ffd5d8;
+  border-color:#a93e49;
+  background:#3a1820
+}
+
 .page{display:none}
 .page.active{display:block}
-.hero{display:grid;grid-template-columns:minmax(0,1fr) 285px;gap:20px}
-.card{background:linear-gradient(145deg,#171a27ee,#11131d);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow)}
-.studio{padding:24px;min-height:510px}
-.preview{position:relative;background:#07080d;border:1px solid #2d3040;border-radius:17px;overflow:hidden;aspect-ratio:16/9;display:grid;place-items:center}
-.preview canvas{width:100%;height:100%;object-fit:contain;display:block}
-.preview.empty:before{content:"◉";font-size:54px;color:#35394b}
-.preview.empty:after{content:"Sua prévia aparecerá aqui";position:absolute;top:57%;color:var(--muted)}
+
+.hero{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 285px;
+  gap:20px
+}
+
+.card{
+  background:linear-gradient(145deg,#171a27ee,#11131d);
+  border:1px solid var(--line);
+  border-radius:20px;
+  box-shadow:var(--shadow)
+}
+
+.studio{
+  padding:24px;
+  min-height:510px
+}
+
+.preview{
+  position:relative;
+  background:#07080d;
+  border:1px solid #2d3040;
+  border-radius:17px;
+  overflow:hidden;
+  aspect-ratio:16/9;
+  display:grid;
+  place-items:center
+}
+
+.preview canvas{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:block
+}
+
+.preview.empty:before{
+  content:"◉";
+  font-size:54px;
+  color:#35394b
+}
+
+.preview.empty:after{
+  content:"Sua prévia aparecerá aqui";
+  position:absolute;
+  top:57%;
+  color:var(--muted)
+}
+
 .empty canvas{display:none}
-.rec-bubble{position:absolute;right:16px;top:16px;background:#27141a;border:1px solid #a13c49;color:#ffbbc0;border-radius:999px;padding:7px 12px;display:none;gap:8px;align-items:center}
+
+.rec-bubble{
+  position:absolute;
+  right:16px;
+  top:16px;
+  background:#27141a;
+  border:1px solid #a13c49;
+  color:#ffbbc0;
+  border-radius:999px;
+  padding:7px 12px;
+  display:none;
+  gap:8px;
+  align-items:center
+}
+
 .recording .rec-bubble{display:flex}
-.dot{width:8px;height:8px;background:var(--red);border-radius:50%;box-shadow:0 0 0 5px #ff526033}
-.studio-controls{display:flex;align-items:center;justify-content:space-between;gap:18px;padding-top:18px}
-.big-record{width:72px;height:72px;border-radius:50%;background:var(--red);box-shadow:0 0 0 9px #ff52601f,0 10px 30px #ff526044;display:grid;place-items:center}
-.big-record span{width:24px;height:24px;border-radius:6px;background:#fff}
-.big-record.start span{border-radius:50%;width:29px;height:29px}
+
+.dot{
+  width:8px;
+  height:8px;
+  background:var(--red);
+  border-radius:50%;
+  box-shadow:0 0 0 5px #ff526033
+}
+
+.studio-controls{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  padding-top:18px
+}
+
+.big-record{
+  width:72px;
+  height:72px;
+  border-radius:50%;
+  background:var(--red);
+  box-shadow:0 0 0 9px #ff52601f,0 10px 30px #ff526044;
+  display:grid;
+  place-items:center
+}
+
+.big-record span{
+  width:24px;
+  height:24px;
+  border-radius:6px;
+  background:#fff
+}
+
+.big-record.start span{
+  border-radius:50%;
+  width:29px;
+  height:29px
+}
+
 .big-record:hover{transform:scale(1.04)}
-.control-label{color:var(--muted);font-size:12px;margin-bottom:5px}
-.select{background:#202332;border:1px solid var(--line);color:#fff;border-radius:10px;padding:10px 12px;min-width:135px}
-.actions{display:flex;gap:8px}
-.icon-btn,.secondary{background:#232637;border:1px solid var(--line);border-radius:11px;padding:10px 13px}
-.icon-btn:hover,.secondary:hover{border-color:#7160cd}
+
+.control-label{
+  color:var(--muted);
+  font-size:12px;
+  margin-bottom:5px
+}
+
+.select{
+  background:#202332;
+  border:1px solid var(--line);
+  color:#fff;
+  border-radius:10px;
+  padding:10px 12px;
+  min-width:135px
+}
+
+.actions{
+  display:flex;
+  gap:8px
+}
+
+.icon-btn,.secondary{
+  background:#232637;
+  border:1px solid var(--line);
+  border-radius:11px;
+  padding:10px 13px
+}
+
+.icon-btn:hover,.secondary:hover{
+  border-color:#7160cd
+}
+
 .settings{padding:20px}
+
 .settings h3,.section-head h2{margin:0}
+
 .settings h3{font-size:16px}
-.setting{padding:17px 0;border-bottom:1px solid var(--line)}
+
+.setting{
+  padding:17px 0;
+  border-bottom:1px solid var(--line)
+}
+
 .setting:last-child{border:0}
-.setting label{display:flex;justify-content:space-between;gap:8px;align-items:center;font-weight:600}
-.hint{font-size:12px;color:var(--muted);margin:7px 0 0}
-.features{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:18px}
-.feature{padding:16px;min-height:105px}
-.feature b{display:block;margin:9px 0 4px}
+
+.setting label{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  align-items:center;
+  font-weight:600
+}
+
+.hint{
+  font-size:12px;
+  color:var(--muted);
+  margin:7px 0 0
+}
+
+.features{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+  margin-top:18px
+}
+
+.feature{
+  padding:16px;
+  min-height:105px
+}
+
+.feature b{
+  display:block;
+  margin:9px 0 4px
+}
+
 .feature small{color:var(--muted)}
-.section-head{display:flex;justify-content:space-between;align-items:center;margin:7px 0 18px}
+
+.section-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin:7px 0 18px
+}
+
 .section-head h2{font-size:22px}
-.library{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+
+.library{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
+  gap:14px
+}
+
 .asset{overflow:hidden}
-.asset-media{aspect-ratio:16/10;background:#090a10;display:grid;place-items:center;color:#777}
-.asset-media video{width:100%;height:100%;object-fit:cover}
+
+.asset-media{
+  aspect-ratio:16/10;
+  background:#090a10;
+  display:grid;
+  place-items:center;
+  color:#777
+}
+
+.asset-media video{
+  width:100%;
+  height:100%;
+  object-fit:cover
+}
+
 .asset-info{padding:13px}
-.asset-info b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.asset-info b{
+  display:block;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis
+}
+
 .asset-info small{color:var(--muted)}
-.asset-actions{display:flex;gap:7px;margin-top:11px}
-.asset-actions button{flex:1;padding:8px;border-radius:8px;background:#272a3b}
-.empty-state{padding:60px 20px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:16px}
-.editor{display:grid;grid-template-columns:1fr 300px;gap:18px}
+
+.asset-actions{
+  display:flex;
+  gap:7px;
+  margin-top:11px
+}
+
+.asset-actions button{
+  flex:1;
+  padding:8px;
+  border-radius:8px;
+  background:#272a3b
+}
+
+.empty-state{
+  padding:60px 20px;
+  text-align:center;
+  color:var(--muted);
+  border:1px dashed var(--line);
+  border-radius:16px
+}
+
+.editor{
+  display:grid;
+  grid-template-columns:1fr 300px;
+  gap:18px
+}
+
 .editor-preview{padding:18px}
-.editor-preview video{width:100%;max-height:520px;background:#050509;border-radius:14px}
+
+.editor-preview video{
+  width:100%;
+  max-height:520px;
+  background:#050509;
+  border-radius:14px
+}
+
 .editor-side{padding:20px}
-.range{width:100%;accent-color:var(--purple)}
-.primary{background:linear-gradient(135deg,#8367ff,#5e3de8);padding:11px 16px;border-radius:11px;font-weight:700;box-shadow:0 8px 22px #694fff33}
-.primary:disabled{opacity:.45;cursor:not-allowed}
-.modal{position:fixed;inset:0;background:#0009;display:none;place-items:center;padding:20px;z-index:20}
+
+.range{
+  width:100%;
+  accent-color:var(--purple)
+}
+
+.primary{
+  background:linear-gradient(135deg,#8367ff,#5e3de8);
+  padding:11px 16px;
+  border-radius:11px;
+  font-weight:700;
+  box-shadow:0 8px 22px #694fff33
+}
+
+.primary:disabled{
+  opacity:.45;
+  cursor:not-allowed
+}
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:#0009;
+  display:none;
+  place-items:center;
+  padding:20px;
+  z-index:20
+}
+
 .modal.show{display:grid}
-.modal-card{max-width:550px;width:100%;padding:25px}
+
+.modal-card{
+  max-width:550px;
+  width:100%;
+  padding:25px
+}
+
 .modal-card h2{margin-top:0}
-.close{float:right;background:transparent;color:var(--muted);font-size:22px}
-.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:#24283a;border:1px solid var(--line);padding:11px 16px;border-radius:999px;opacity:0;pointer-events:none;transition:.25s;z-index:30}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+.close{
+  float:right;
+  background:transparent;
+  color:var(--muted);
+  font-size:22px
+}
+
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:24px;
+  transform:translateX(-50%) translateY(20px);
+  background:#24283a;
+  border:1px solid var(--line);
+  padding:11px 16px;
+  border-radius:999px;
+  opacity:0;
+  pointer-events:none;
+  transition:.25s;
+  z-index:30
+}
+
+.toast.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(0)
+}
+
 .danger{color:#ff9aa1!important}
 
+.about{
+  display:grid;
+  gap:18px
+}
+
+.about-hero{padding:28px}
+
+.about-hero h2{
+  font-size:28px;
+  margin:0 0 8px
+}
+
+.about-hero p{
+  color:var(--muted);
+  font-size:16px;
+  max-width:900px;
+  margin:0
+}
+
+.about-card{padding:20px}
+
+.about-card h3{
+  margin:0 0 10px;
+  color:#fff
+}
+
+.about-card p{
+  color:var(--muted);
+  margin:8px 0
+}
+
+.about-card ul{
+  margin:10px 0 0;
+  padding-left:20px;
+  color:var(--muted)
+}
+
+.about-card li{margin:8px 0}
+
+.about-card li strong{color:#fff}
+
+.about-wide{grid-column:1/-1}
+
+.about-note{
+  border-left:3px solid var(--purple);
+  padding:14px 16px;
+  background:#17132b;
+  border-radius:10px;
+  color:var(--muted)
+}
+
 @media(max-width:900px){
-.side{width:72px;padding:20px 10px}
-.brand strong,.pro,.nav button em,.side-foot{display:none}
-.nav button{justify-content:center}
-.main{padding:20px}
-.hero,.editor{grid-template-columns:1fr}
-.features{grid-template-columns:repeat(2,1fr)}
+  .side{
+    width:72px;
+    padding:20px 10px
+  }
+
+  .brand strong,
+  .pro,
+  .nav button em,
+  .side-foot{
+    display:none
+  }
+
+  .nav button{justify-content:center}
+  .main{padding:20px}
+
+  .hero,
+  .editor{
+    grid-template-columns:1fr
+  }
+
+  .features{
+    grid-template-columns:repeat(2,1fr)
+  }
 }
 
 @media(max-width:560px){
-.top h1{font-size:22px}
-.status{display:none}
-.studio{padding:14px}
-.studio-controls{flex-wrap:wrap}
-.settings{padding:14px}
-.features{grid-template-columns:1fr 1fr}
-.feature{padding:12px}
-.side{position:fixed;bottom:0;left:0;right:0;width:auto;height:63px;z-index:10;flex-direction:row;padding:7px 10px;border-top:1px solid var(--line);border-right:0}
-.brand,.side-foot{display:none}
-.nav{width:100%;display:flex;justify-content:space-around}
-.nav button{padding:8px 13px}
-.main{padding-bottom:78px}
+  .top h1{font-size:22px}
+  .status{display:none}
+  .studio{padding:14px}
+  .studio-controls{flex-wrap:wrap}
+  .settings{padding:14px}
+
+  .features{
+    grid-template-columns:1fr 1fr
+  }
+
+  .feature{padding:12px}
+
+  .side{
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    width:auto;
+    height:63px;
+    z-index:10;
+    flex-direction:row;
+    padding:7px 10px;
+    border-top:1px solid var(--line);
+    border-right:0
+  }
+
+  .brand,.side-foot{display:none}
+
+  .nav{
+    width:100%;
+    display:flex;
+    justify-content:space-around
+  }
+
+  .nav button{padding:8px 13px}
+  .main{padding-bottom:78px}
 }
 </style>
 </head>
-<body>
 
+<body>
 <div class="app">
+
 <aside class="side">
   <div class="brand">
     <div class="logo"></div>
@@ -141,6 +614,11 @@ button{cursor:pointer;border:0;color:inherit}
       <span>▣</span>
       <em>Biblioteca</em>
     </button>
+
+    <button data-page="about">
+      <span>ⓘ</span>
+      <em>Sobre</em>
+    </button>
   </nav>
 
   <div class="side-foot">
@@ -150,171 +628,330 @@ button{cursor:pointer;border:0;color:inherit}
 </aside>
 
 <main class="main">
-  <header class="top">
-    <div>
-      <h1 id="pageTitle">Importar vídeo</h1>
-      <p id="pageSub">Escolha um vídeo salvo no seu aparelho para editar.</p>
-    </div>
 
-    <div id="status" class="status">
-      Pronto para importar
-    </div>
-  </header>
+<header class="top">
+  <div>
+    <h1 id="pageTitle">Importar vídeo</h1>
+    <p id="pageSub">Escolha um vídeo salvo no seu aparelho para editar.</p>
+  </div>
 
-  <section id="studio" class="page active">
-    <div class="hero">
-      <div class="card studio" id="studioCard">
-        <div class="preview empty" id="preview">
-          <canvas id="recordCanvas" width="1280" height="720"></canvas>
+  <div id="status" class="status">
+    Pronto para importar
+  </div>
+</header>
 
-          <div class="rec-bubble">
-            <i class="dot"></i>
-            <span id="timer">00:00</span>
-            <button id="bubbleStop" title="Parar">■</button>
-          </div>
+<section id="studio" class="page active">
+  <div class="hero">
 
-          <video id="importPreview" controls style="display:none;width:100%;height:100%;object-fit:contain"></video>
+    <div class="card studio" id="studioCard">
+      <div class="preview empty" id="preview">
+        <canvas id="recordCanvas" width="1280" height="720"></canvas>
+
+        <div class="rec-bubble">
+          <i class="dot"></i>
+          <span id="timer">00:00</span>
+          <button id="bubbleStop" title="Parar">■</button>
         </div>
 
-        <div class="studio-controls">
-          <div>
-            <div class="control-label">Qualidade</div>
-
-            <select id="quality" class="select">
-              <option value="720">HD 720p</option>
-              <option value="1080" selected>Full HD 1080p</option>
-              <option value="source">Original</option>
-            </select>
-          </div>
-
-          <button class="big-record start" id="recordBtn" title="Iniciar gravação" aria-label="Iniciar gravação">
-            <span></span>
-          </button>
-
-          <button class="primary" id="importBtn" title="Escolher vídeo">
-            Escolher vídeo
-          </button>
-
-          <input id="fileInput" type="file" accept="video/*" hidden>
-
-          <div class="actions">
-            <button class="icon-btn" id="openLibraryBtn" title="Abrir biblioteca">
-              Biblioteca
-            </button>
-          </div>
-        </div>
+        <video id="importPreview" controls style="display:none;width:100%;height:100%;object-fit:contain"></video>
       </div>
 
-      <div class="card settings">
-        <h3>Importação segura</h3>
+      <div class="studio-controls">
+        <div>
+          <div class="control-label">Qualidade</div>
 
-        <div class="setting">
-          <label>
-            Permissão controlada
-            <span style="color:var(--green)">✓</span>
-          </label>
-
-          <p class="hint">
-            A gravação da tela pede autorização do navegador somente quando você clicar no botão vermelho. O microfone fica desligado.
-          </p>
+          <select id="quality" class="select">
+            <option value="720">HD 720p</option>
+            <option value="1080" selected>Full HD 1080p</option>
+            <option value="source">Original</option>
+          </select>
         </div>
 
-        <div class="setting">
-          <label>
-            Sem marca-d’água
-            <span style="color:var(--green)">✓</span>
-          </label>
-
-          <p class="hint">
-            Seus vídeos continuam sem marca do Recordify.
-          </p>
-        </div>
-
-        <div class="setting">
-          <label>Privacidade</label>
-
-          <button class="secondary" id="helpBtn" style="margin-top:10px;width:100%">
-            Como funciona?
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <div class="features">
-      <div class="card feature">
-        <span>◉</span>
-        <b>Gravação de tela</b>
-        <small>Inicie pelo botão vermelho.</small>
-      </div>
-
-      <div class="card feature">
-        <span>▣</span>
-        <b>Importação local</b>
-        <small>Escolha vídeos do seu aparelho.</small>
-      </div>
-
-      <div class="card feature">
-        <span>✂</span>
-        <b>Editor rápido</b>
-        <small>Corte o início e o fim.</small>
-      </div>
-
-      <div class="card feature">
-        <span>🔒</span>
-        <b>Privacidade</b>
-        <small>Microfone desligado por padrão.</small>
-      </div>
-    </div>
-  </section>
-
-  <section id="editor" class="page">
-    <div class="editor">
-      <div class="card editor-preview">
-        <div class="empty-state" id="editorEmpty">
-          Selecione um vídeo na Biblioteca para editar.
-        </div>
-
-        <video id="editorVideo" controls style="display:none"></video>
-      </div>
-
-      <div class="card editor-side">
-        <h3>Editor rápido</h3>
-
-        <p class="hint">
-          Corte o início e o fim sem alterar o arquivo original.
-        </p>
-
-        <label class="control-label">
-          Início
-          <output id="startOut">0.0s</output>
-        </label>
-
-        <input id="startRange" class="range" type="range" min="0" max="1" step="0.1" value="0">
-
-        <label class="control-label" style="display:block;margin-top:18px">
-          Fim
-          <output id="endOut">0.0s</output>
-        </label>
-
-        <input id="endRange" class="range" type="range" min="0" max="1" step="0.1" value="1">
-
-        <button id="trimBtn" class="primary" style="width:100%;margin-top:24px" disabled>
-          Exportar trecho
+        <button class="big-record start" id="recordBtn" title="Iniciar gravação">
+          <span></span>
         </button>
 
-        <p id="editorHint" class="hint"></p>
+        <button class="primary" id="importBtn" title="Escolher vídeo">
+          Escolher vídeo
+        </button>
+
+        <input id="fileInput" type="file" accept="video/*" hidden>
+
+        <div class="actions">
+          <button class="icon-btn" id="openLibraryBtn" title="Abrir biblioteca">
+            Biblioteca
+          </button>
+        </div>
       </div>
     </div>
-  </section>
 
-  <section id="library" class="page">
-    <div class="section-head">
-      <h2>Sua biblioteca</h2>
-      <button class="secondary" id="refreshBtn">Atualizar</button>
+    <div class="card settings">
+      <h3>Importação segura</h3>
+
+      <div class="setting">
+        <label>
+          Permissão controlada
+          <span style="color:var(--green)">✓</span>
+        </label>
+
+        <p class="hint">
+          A gravação da tela pede autorização do navegador somente quando você clicar no botão vermelho. O microfone fica desligado.
+        </p>
+      </div>
+
+      <div class="setting">
+        <label>
+          Sem marca-d’água
+          <span style="color:var(--green)">✓</span>
+        </label>
+
+        <p class="hint">
+          Seus vídeos continuam sem marca do Recordify.
+        </p>
+      </div>
+
+      <div class="setting">
+        <label>Privacidade</label>
+
+        <button class="secondary" id="helpBtn" style="margin-top:10px;width:100%">
+          Como funciona?
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="features">
+    <div class="card feature">
+      <span>◉</span>
+      <b>Gravação de tela</b>
+      <small>Inicie pelo botão vermelho.</small>
     </div>
 
-    <div id="libraryGrid" class="library"></div>
-  </section>
+    <div class="card feature">
+      <span>▣</span>
+      <b>Importação local</b>
+      <small>Escolha vídeos do seu aparelho.</small>
+    </div>
+
+    <div class="card feature">
+      <span>✂</span>
+      <b>Editor rápido</b>
+      <small>Corte o início e o fim.</small>
+    </div>
+
+    <div class="card feature">
+      <span>🔒</span>
+      <b>Privacidade</b>
+      <small>Microfone desligado por padrão.</small>
+    </div>
+  </div>
+</section>
+
+<section id="editor" class="page">
+  <div class="editor">
+    <div class="card editor-preview">
+      <div class="empty-state" id="editorEmpty">
+        Selecione um vídeo na Biblioteca para editar.
+      </div>
+
+      <video id="editorVideo" controls style="display:none"></video>
+    </div>
+
+    <div class="card editor-side">
+      <h3>Editor rápido</h3>
+
+      <p class="hint">
+        Corte o início e o fim sem alterar o arquivo original.
+      </p>
+
+      <label class="control-label">
+        Início
+        <output id="startOut">0.0s</output>
+      </label>
+
+      <input id="startRange" class="range" type="range" min="0" max="1" step="0.1" value="0">
+
+      <label class="control-label" style="display:block;margin-top:18px">
+        Fim
+        <output id="endOut">0.0s</output>
+      </label>
+
+      <input id="endRange" class="range" type="range" min="0" max="1" step="0.1" value="1">
+
+      <button id="trimBtn" class="primary" style="width:100%;margin-top:24px" disabled>
+        Exportar trecho
+      </button>
+
+      <p id="editorHint" class="hint"></p>
+    </div>
+  </div>
+</section>
+
+<section id="library" class="page">
+  <div class="section-head">
+    <h2>Sua biblioteca</h2>
+    <button class="secondary" id="refreshBtn">Atualizar</button>
+  </div>
+
+  <div id="libraryGrid" class="library"></div>
+</section>
+
+<section id="about" class="page">
+  <div class="about">
+
+    <div class="card about-hero">
+      <h2>Gravador de tela e vídeo</h2>
+
+      <p>
+        Gravador de tela, gravar vídeo - Recordify é um aplicativo de gravar tela e aplicativo de fazer vídeo poderoso e fácil de usar. Ele ajuda você a gravar vídeos, tutoriais, jogos, chamadas de vídeo e todos os momentos que desejar com facilidade. Com gravação nítida e edição intuitiva, o Recordify tem tudo para criar seus vídeos.
+      </p>
+    </div>
+
+    <div class="card about-card">
+      <h3>🔥 Gravador de Tela Poderoso 🔥</h3>
+
+      <ul>
+        <li>
+          <strong>🌟 Gravador HD e FHD:</strong>
+          capture cada detalhe em 1080p, 16 Mbps e até 120 FPS, conforme o suporte do dispositivo.
+        </li>
+
+        <li>
+          <strong>🌟 Gravador de Tela com Áudio:</strong>
+          grave a tela com áudio interno, som do microfone ou ambos.
+        </li>
+
+        <li>
+          <strong>🌟 Gravação com Facecam:</strong>
+          adicione seu rosto às gravações para criar vídeos de reação e aulas.
+        </li>
+
+        <li>
+          <strong>🌟 Desenho e Anotações ao Vivo:</strong>
+          explique ideias complexas com a ferramenta Escova do Recordify.
+        </li>
+
+        <li>
+          <strong>🌟 Bola Flutuante com Um Toque:</strong>
+          inicie, pause e retome a gravação de tela com apenas um toque.
+        </li>
+
+        <li>
+          <strong>🌟 Captura de Tela Rápida:</strong>
+          capture os melhores momentos usando a bola flutuante.
+        </li>
+
+        <li>
+          <strong>🌟 Gravador de Vídeo em Segundo Plano:</strong>
+          continue gravando em segundo plano para ter mais flexibilidade.
+        </li>
+      </ul>
+    </div>
+
+    <div class="card about-card">
+      <h3>🚀 Aplicativo de Fazer Vídeo Portátil</h3>
+
+      <ul>
+        <li>
+          <strong>Editor de Vídeo Integrado:</strong>
+          corte, recorte, gire e ajuste suas gravações antes de compartilhar.
+        </li>
+
+        <li>
+          <strong>Gravador de Jogos:</strong>
+          capture partidas e vitórias com fluidez.
+        </li>
+
+        <li>
+          <strong>Gravador de Chamadas de Vídeo:</strong>
+          grave videochamadas importantes e reuniões online.
+        </li>
+
+        <li>
+          <strong>Sem Limite de Tempo:</strong>
+          grave vídeo pelo tempo que precisar.
+        </li>
+
+        <li>
+          <strong>Sem Marca d'Água:</strong>
+          compartilhe suas criações sem marcas d'água.
+        </li>
+
+        <li>
+          <strong>Compartilhamento Fácil:</strong>
+          compartilhe vídeos no YouTube ou com amigos.
+        </li>
+
+        <li>
+          <strong>Gravador de Tela para Android:</strong>
+          funciona bem em dispositivos Android e é uma ótima opção para celulares Samsung.
+        </li>
+      </ul>
+    </div>
+
+    <div class="card about-card">
+      <h3>✅ Captura de Tela Clara e Suave</h3>
+
+      <p>
+        Com o Recordify, o aplicativo de gravar vídeo, você pode capturar sua tela e imagens com excepcional clareza em HD e fluidez. Os parâmetros também podem ser definidos como adaptáveis ou conforme sua preferência.
+      </p>
+
+      <h3>✅ Editor de Vídeo Multifuncional</h3>
+
+      <p>
+        Quer editar seu vídeo e postá-lo no YouTube após a gravação? Corte-o para extrair as melhores partes, recorte-o para remover a barra de status superior ou gire-o para alternar entre os modos paisagem e retrato.
+      </p>
+    </div>
+
+    <div class="card about-card">
+      <h3>✅ Bola Flutuante com Um Toque</h3>
+
+      <p>
+        Com apenas um toque na bola flutuante, você pode iniciar, pausar e retomar a gravação de tela, além de tirar capturas de tela. Você também pode ocultar a bola flutuante quando não precisar dela.
+      </p>
+    </div>
+
+    <div class="card about-card">
+      <h3>✅ Gravador de Tela com Facecam</h3>
+
+      <p>
+        Abra a facecam e mostre seu rosto na tela para tutoriais, vídeos de jogos e apresentações envolventes. Você criará vídeos imersivos, cheios de reações reais com a facecam.
+      </p>
+    </div>
+
+    <div class="card about-card">
+      <h3>✅ Gravador de Tela com Escova</h3>
+
+      <p>
+        Com os recursos de escova e facecam, você pode explicar conceitos usando desenhos na tela e envolver os alunos com suas expressões faciais simultaneamente.
+      </p>
+    </div>
+
+    <div class="card about-card">
+      <h3>✅ Grave e Compartilhe com Facilidade</h3>
+
+      <p>
+        Você pode capturar vídeos de alta qualidade com facilidade, fazer anotações com ferramentas e compartilhar suas criações com seus amigos. Baixe nosso aplicativo de gravar vídeo e simplifique sua experiência de gravação agora!
+      </p>
+
+      <p>
+        <strong>
+          *Todos os recursos de gravação de tela do Gravador de tela, Gravar vídeo - Recordify são gratuitos para usar.
+        </strong>
+      </p>
+
+      <p>
+        Suas sugestões ou feedbacks são importantes para nós.
+      </p>
+    </div>
+
+    <div class="about-note">
+      <strong>Dicas:</strong><br>
+      • Respeitamos todos os direitos autorais. Por favor, confirme que o conteúdo foi autorizado antes de gravar, transmitir ou compartilhar.
+    </div>
+  </div>
+</section>
+
 </main>
 </div>
 
@@ -345,26 +982,26 @@ button{cursor:pointer;border:0;color:inherit}
 'use strict';
 
 const $ = s => document.querySelector(s);
-const \(\) = s => [...document.querySelectorAll(s)];
+const \[ = s => [...document.querySelectorAll(s)];
 
 const state = {
-  audio: 'none',
-  face: false,
-  drawing: false,
-  recording: false,
-  screen: null,
-  mic: null,
-  faceStream: null,
-  canvasStream: null,
-  recorder: null,
-  chunks: [],
-  started: 0,
-  timer: null,
-  drawLoop: null,
-  strokes: [],
-  currentStroke: null,
-  selected: null,
-  assets: []
+  audio:'none',
+  face:false,
+  drawing:false,
+  recording:false,
+  screen:null,
+  mic:null,
+  faceStream:null,
+  canvasStream:null,
+  recorder:null,
+  chunks:[],
+  started:0,
+  timer:null,
+  drawLoop:null,
+  strokes:[],
+  currentStroke:null,
+  selected:null,
+  assets:[]
 };
 
 const canvas = $('#recordCanvas');
@@ -381,7 +1018,7 @@ faceVideo.playsInline = true;
 const DB = 'recordify-pro-web';
 const STORE = 'assets';
 
-function toast(msg) {
+function toast(msg){
   const t = $('#toast');
   t.textContent = msg;
   t.classList.add('show');
@@ -391,14 +1028,12 @@ function toast(msg) {
   }, 3000);
 }
 
-function db() {
-  return new Promise((res, rej) => {
-    const r = indexedDB.open(DB, 1);
+function db(){
+  return new Promise((res,rej) => {
+    const r = indexedDB.open(DB,1);
 
     r.onupgradeneeded = () => {
-      r.result.createObjectStore(STORE, {
-        keyPath: 'id'
-      });
+      r.result.createObjectStore(STORE,{keyPath:'id'});
     };
 
     r.onsuccess = () => res(r.result);
@@ -406,20 +1041,20 @@ function db() {
   });
 }
 
-async function putAsset(blob, type, name) {
+async function putAsset(blob,type,name){
   const item = {
-    id: crypto.randomUUID ? crypto.randomUUID() : Date.now() + '',
+    id:crypto.randomUUID ? crypto.randomUUID() : Date.now() + '',
     blob,
     type,
     name,
-    created: Date.now(),
-    size: blob.size
+    created:Date.now(),
+    size:blob.size
   };
 
   const d = await db();
 
-  await new Promise((res, rej) => {
-    const tx = d.transaction(STORE, 'readwrite');
+  await new Promise((res,rej) => {
+    const tx = d.transaction(STORE,'readwrite');
 
     tx.objectStore(STORE).put(item);
     tx.oncomplete = res;
@@ -429,25 +1064,25 @@ async function putAsset(blob, type, name) {
   return item;
 }
 
-async function allAssets() {
+async function allAssets(){
   const d = await db();
 
-  return new Promise((res, rej) => {
+  return new Promise((res,rej) => {
     const r = d.transaction(STORE).objectStore(STORE).getAll();
 
     r.onsuccess = () => {
-      res(r.result.sort((a, b) => b.created - a.created));
+      res(r.result.sort((a,b) => b.created - a.created));
     };
 
     r.onerror = () => rej(r.error);
   });
 }
 
-async function removeAsset(id) {
+async function removeAsset(id){
   const d = await db();
 
-  return new Promise((res, rej) => {
-    const tx = d.transaction(STORE, 'readwrite');
+  return new Promise((res,rej) => {
+    const tx = d.transaction(STORE,'readwrite');
 
     tx.objectStore(STORE).delete(id);
     tx.oncomplete = res;
@@ -455,21 +1090,21 @@ async function removeAsset(id) {
   });
 }
 
-function fmt(sec) {
-  sec = Math.max(0, Math.floor(sec || 0));
+function fmt(sec){
+  sec = Math.max(0,Math.floor(sec || 0));
 
-  return String(Math.floor(sec / 60)).padStart(2, '0') +
+  return String(Math.floor(sec / 60)).padStart(2,'0') +
     ':' +
-    String(sec % 60).padStart(2, '0');
+    String(sec % 60).padStart(2,'0');
 }
 
-function setStatus(text, live = false) {
+function setStatus(text,live=false){
   $('#status').textContent = text;
-  $('#status').classList.toggle('live', live);
+  $('#status').classList.toggle('live',live);
 }
 
-function mime() {
-  if (!window.MediaRecorder) return '';
+function mime(){
+  if(!window.MediaRecorder) return '';
 
   return [
     'video/webm;codecs=vp9,opus',
@@ -478,95 +1113,603 @@ function mime() {
   ].find(x => MediaRecorder.isTypeSupported(x)) || '';
 }
 
-async function getMic() {
-  if (state.audio === 'none') return null;
+async function getMic(){
+  if(state.audio === 'none') return null;
 
   return navigator.mediaDevices.getUserMedia({
-    audio: {
-      echoCancellation: true,
-      noiseSuppression: true,
-      autoGainControl: true
+    audio:{
+      echoCancellation:true,
+      noiseSuppression:true,
+      autoGainControl:true
     }
   });
 }
 
-function audioMix(screen, mic) {
-  if (
+function audioMix(screen,mic){
+  if(
     !screen?.getAudioTracks().length &&
     !mic?.getAudioTracks().length
-  ) {
+  ){
     return {
-      stream: null,
-      ctx: null
+      stream:null,
+      ctx:null
     };
   }
 
   const ac = new AudioContext();
   const dest = ac.createMediaStreamDestination();
 
-  if (screen?.getAudioTracks().length) {
+  if(screen?.getAudioTracks().length){
     ac.createMediaStreamSource(
       new MediaStream(screen.getAudioTracks())
     ).connect(dest);
   }
 
-  if (mic?.getAudioTracks().length) {
+  if(mic?.getAudioTracks().length){
     ac.createMediaStreamSource(mic).connect(dest);
   }
 
   return {
-    stream: dest.stream,
-    ctx: ac
+    stream:dest.stream,
+    ctx:ac
   };
 }
 
-async function startRecording() {
-  if (!navigator.mediaDevices?.getDisplayMedia) {
+async function startRecording(){
+  if(!navigator.mediaDevices?.getDisplayMedia){
     toast('Este navegador não permite captura de tela.');
     return;
   }
 
-  if (!window.MediaRecorder) {
-    toast('Este navegador não permite salvar gravações.');
-    return;
-  }
-
-  try {
+  try{
     $('#importPreview').style.display = 'none';
     $('#recordCanvas').style.display = 'block';
 
     state.screen = await navigator.mediaDevices.getDisplayMedia({
-      video: {
-        frameRate: {
-          ideal: 60
-        },
-        width: {
-          ideal: 1920
-        },
-        height: {
-          ideal: 1080
-        }
+      video:{
+        frameRate:{ideal:60},
+        width:{ideal:1920},
+        height:{ideal:1080}
       },
-      audio: state.audio !== 'none'
+      audio:state.audio !== 'none'
     });
 
     state.mic = await getMic();
 
-    if (state.face) {
-      try {
-        state.faceStream = await navigator.mediaDevices.getUserMedia({
-          video: {
-            facingMode: 'user',
-            width: {
-              ideal: 640
-            },
-            height: {
-              ideal: 640
-            }
-          },
-          audio: false
-        });
+    screenVideo.srcObject = state.screen;
+    await screenVideo.play();
 
-        faceVideo.srcObject = state.faceStream;
-        await faceVideo.play();
-      } catch (e) {
+    const track = state.screen.getVideoTracks()[0];
+    const settings = track.getSettings();
+
+    let w = settings.width || 1280;
+    let h = settings.height || 720;
+
+    if($('#quality').value === '720'){
+      w = 1280;
+      h = 720;
+    }
+
+    if($('#quality').value === '1080'){
+      w = 1920;
+      h = 1080;
+    }
+
+    if(w / h > 2 || h / w > 2){
+      w = 1280;
+      h = 720;
+    }
+
+    canvas.width = w;
+    canvas.height = h;
+
+    const fps = Math.min(settings.frameRate || 60,60);
+
+    state.canvasStream = canvas.captureStream(fps);
+
+    const mix = audioMix(state.screen,state.mic);
+    state.audioCtx = mix.ctx;
+
+    if(mix.stream){
+      mix.stream.getAudioTracks().forEach(t => {
+        state.canvasStream.addTrack(t);
+      });
+    }
+
+    state.chunks = [];
+
+    const opts = mime()
+      ? {
+          mimeType:mime(),
+          videoBitsPerSecond:16000000
+        }
+      : {};
+
+    state.recorder = new MediaRecorder(state.canvasStream,opts);
+
+    state.recorder.ondataavailable = e => {
+      if(e.data.size){
+        state.chunks.push(e.data);
+      }
+    };
+
+    state.recorder.onstop = finishRecording;
+
+    track.onended = () => {
+      if(state.recording){
+        stopRecording();
+      }
+    };
+
+    state.recording = true;
+    state.started = Date.now();
+    state.strokes = [];
+
+    $('#studioCard').classList.add('recording');
+    $('#preview').classList.remove('empty');
+    $('#recordBtn').classList.remove('start');
+
+    setStatus('Gravando agora',true);
+
+    state.recorder.start(250);
+    drawFrame();
+
+    state.timer = setInterval(() => {
+      $('#timer').textContent = fmt(
+        (Date.now() - state.started) / 1000
+      );
+    },250);
+
+  }catch(e){
+    cleanup();
+
+    if(e.name !== 'AbortError'){
+      toast('Não foi possível iniciar a captura: ' + e.message);
+    }
+  }
+}
+
+function drawFrame(){
+  if(!state.recording) return;
+
+  ctx.fillStyle = '#050509';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  if(screenVideo.readyState >= 2){
+    ctx.drawImage(
+      screenVideo,
+      0,
+      0,
+      canvas.width,
+      canvas.height
+    );
+  }
+
+  for(const s of state.strokes){
+    ctx.beginPath();
+
+    s.forEach((p,i) => {
+      if(i){
+        ctx.lineTo(p.x,p.y);
+      }else{
+        ctx.moveTo(p.x,p.y);
+      }
+    });
+
+    ctx.strokeStyle = '#ff4058';
+    ctx.lineWidth = 7;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.stroke();
+  }
+
+  if(state.currentStroke){
+    ctx.beginPath();
+
+    state.currentStroke.forEach((p,i) => {
+      if(i){
+        ctx.lineTo(p.x,p.y);
+      }else{
+        ctx.moveTo(p.x,p.y);
+      }
+    });
+
+    ctx.strokeStyle = '#ff4058';
+    ctx.lineWidth = 7;
+    ctx.lineCap = 'round';
+    ctx.stroke();
+  }
+
+  state.drawLoop = requestAnimationFrame(drawFrame);
+}
+
+function stopRecording(){
+  if(!state.recording) return;
+
+  state.recording = false;
+  clearInterval(state.timer);
+  cancelAnimationFrame(state.drawLoop);
+
+  if(
+    state.recorder &&
+    state.recorder.state !== 'inactive'
+  ){
+    state.recorder.stop();
+  }else{
+    cleanup();
+  }
+}
+
+async function finishRecording(){
+  const blob = new Blob(state.chunks,{
+    type:state.recorder?.mimeType || 'video/webm'
+  });
+
+  if(blob.size){
+    await putAsset(
+      blob,
+      'video',
+      `Recordify_${new Date().toISOString().slice(0,19).replaceAll(':','-')}.webm`
+    );
+
+    toast('Gravação salva na biblioteca');
+  }
+
+  cleanup();
+  renderLibrary();
+}
+
+function cleanup(){
+  [
+    state.screen,
+    state.mic,
+    state.faceStream,
+    state.canvasStream
+  ].forEach(s => {
+    s?.getTracks?.().forEach(t => t.stop());
+  });
+
+  state.screen = null;
+  state.mic = null;
+  state.faceStream = null;
+  state.canvasStream = null;
+
+  state.audioCtx?.close?.();
+  state.audioCtx = null;
+
+  $('#studioCard').classList.remove('recording');
+  $('#preview').classList.add('empty');
+  $('#recordBtn').classList.add('start');
+  $('#timer').textContent = '00:00';
+
+  setStatus('Pronto para criar');
+}
+
+async function renderLibrary(){
+  state.assets = await allAssets();
+
+  const grid = $('#libraryGrid');
+  grid.innerHTML = '';
+
+  if(!state.assets.length){
+    grid.innerHTML = `
+      <div class="empty-state">
+        Nenhum vídeo ou captura ainda.<br>
+        Comece uma gravação para preencher sua biblioteca.
+      </div>
+    `;
+
+    return;
+  }
+
+  state.assets.forEach(a => {
+    const url = URL.createObjectURL(a.blob);
+    const card = document.createElement('article');
+
+    card.className = 'card asset';
+
+    card.innerHTML = `
+      <div class="asset-media">
+        ${
+          a.type === 'video'
+            ? `<video src="${url}" muted preload="metadata"></video>`
+            : '<span style="font-size:44px">▧</span>'
+        }
+      </div>
+
+      <div class="asset-info">
+        <b title="\({a.name}">\){a.name}</b>
+
+        <small>
+          ${new Date(a.created).toLocaleString('pt-BR')}
+          · ${(a.size / 1024 / 1024).toFixed(1)} MB
+        </small>
+
+        <div class="asset-actions">
+          <button data-edit="${a.id}">Editar</button>
+          <button data-download="${a.id}">Baixar</button>
+          <button class="danger" data-delete="${a.id}">Excluir</button>
+        </div>
+      </div>
+    `;
+
+    grid.appendChild(card);
+  });
+
+  grid.querySelectorAll('[data-download]').forEach(b => {
+    b.onclick = () => {
+      download(
+        state.assets.find(x => x.id === b.dataset.download)
+      );
+    };
+  });
+
+  grid.querySelectorAll('[data-delete]').forEach(b => {
+    b.onclick = async () => {
+      await removeAsset(b.dataset.delete);
+      renderLibrary();
+    };
+  });
+
+  grid.querySelectorAll('[data-edit]').forEach(b => {
+    b.onclick = () => {
+      openEditor(
+        state.assets.find(x => x.id === b.dataset.edit)
+      );
+    };
+  });
+}
+
+function download(a){
+  if(!a) return;
+
+  const u = URL.createObjectURL(a.blob);
+  const x = document.createElement('a');
+
+  x.href = u;
+  x.download = a.name;
+  x.click();
+
+  setTimeout(() => {
+    URL.revokeObjectURL(u);
+  },500);
+}
+
+function openEditor(a){
+  if(!a || a.type !== 'video'){
+    toast('O editor trabalha com vídeos.');
+    return;
+  }
+
+  state.selected = a;
+  showPage('editor');
+
+  const v = $('#editorVideo');
+
+  v.src = URL.createObjectURL(a.blob);
+  v.style.display = 'block';
+  $('#editorEmpty').style.display = 'none';
+
+  v.onloadedmetadata = () => {
+    const d = v.duration;
+
+    $('#startRange').max = d;
+    $('#endRange').max = d;
+    $('#startRange').value = 0;
+    $('#endRange').value = d;
+    $('#startOut').textContent = '0.0s';
+    $('#endOut').textContent = d.toFixed(1) + 's';
+    $('#trimBtn').disabled = false;
+  };
+}
+
+async function trimVideo(){
+  const a = state.selected;
+  const v = $('#editorVideo');
+  const start = +$('#startRange').value;
+  const end = +$('#endRange').value;
+
+  if(!a || end <= start){
+    toast('Escolha um intervalo válido.');
+    return;
+  }
+
+  if(!v.captureStream){
+    toast('Seu navegador não suporta exportação de corte; baixe o original.');
+    return;
+  }
+
+  const c = document.createElement('canvas');
+  const ratio = v.videoWidth / v.videoHeight || 16 / 9;
+
+  c.width = 1280;
+  c.height = Math.round(c.width / ratio);
+
+  const cc = c.getContext('2d');
+  const stream = c.captureStream(30);
+  const source = v.captureStream();
+
+  source.getAudioTracks().forEach(t => {
+    stream.addTrack(t);
+  });
+
+  const rec = new MediaRecorder(
+    stream,
+    mime() ? {mimeType:mime()} : {}
+  );
+
+  const parts = [];
+
+  rec.ondataavailable = e => {
+    if(e.data.size){
+      parts.push(e.data);
+    }
+  };
+
+  const done = new Promise(res => {
+    rec.onstop = res;
+  });
+
+  v.currentTime = start;
+
+  await new Promise(r => {
+    v.onseeked = r;
+  });
+
+  rec.start(200);
+  v.play();
+
+  const loop = () => {
+    if(v.paused || v.ended) return;
+
+    cc.drawImage(v,0,0,c.width,c.height);
+
+    if(v.currentTime >= end){
+      v.pause();
+      rec.stop();
+      return;
+    }
+
+    requestAnimationFrame(loop);
+  };
+
+  loop();
+
+  await done;
+
+  const blob = new Blob(parts,{
+    type:rec.mimeType || 'video/webm'
+  });
+
+  await putAsset(
+    blob,
+    'video',
+    a.name.replace(/\.[^.]+$/,'') + '_edit.webm'
+  );
+
+  toast('Trecho exportado para a biblioteca');
+  renderLibrary();
+}
+
+function showPage(id){
+  \]('.page').forEach(p => {
+    p.classList.toggle('active',p.id === id);
+  });
+
+  \[('.nav button').forEach(b => {
+    b.classList.toggle('active',b.dataset.page === id);
+  });
+
+  const titles = {
+    studio:[
+      'Gravar tela',
+      'Capture vídeos, aulas e jogos com qualidade profissional.'
+    ],
+
+    editor:[
+      'Editor de vídeo',
+      'Corte e exporte os melhores momentos.'
+    ],
+
+    library:[
+      'Sua biblioteca',
+      'Tudo o que você criou no Recordify.'
+    ],
+
+    about:[
+      'Sobre o Recordify',
+      'Conheça os recursos do seu gravador de tela e vídeo.'
+    ]
+  };
+
+  $('#pageTitle').textContent = titles[id][0];
+  $('#pageSub').textContent = titles[id][1];
+
+  if(id === 'library'){
+    renderLibrary();
+  }
+}
+
+\]('.nav button').forEach(b => {
+  b.onclick = () => showPage(b.dataset.page);
+});
+
+$('#recordBtn').onclick = () => {
+  state.recording
+    ? stopRecording()
+    : startRecording();
+};
+
+$('#bubbleStop').onclick = stopRecording;
+
+$('#importBtn').onclick = () => {
+  $('#fileInput').click();
+};
+
+$('#openLibraryBtn').onclick = () => {
+  showPage('library');
+};
+
+$('#fileInput').onchange = async e => {
+  const file = e.target.files?.[0];
+
+  if(!file) return;
+
+  if(!file.type.startsWith('video/')){
+    toast('Escolha um arquivo de vídeo.');
+    return;
+  }
+
+  await putAsset(file,'video',file.name);
+
+  const v = $('#importPreview');
+  v.src = URL.createObjectURL(file);
+  v.style.display = 'block';
+
+  $('#preview').classList.remove('empty');
+  $('#recordCanvas').style.display = 'none';
+
+  setStatus('Vídeo importado');
+  toast('Vídeo adicionado à biblioteca');
+  renderLibrary();
+
+  e.target.value = '';
+};
+
+$('#refreshBtn').onclick = renderLibrary;
+$('#trimBtn').onclick = trimVideo;
+
+$('#helpBtn').onclick = () => {
+  $('#helpModal').classList.add('show');
+};
+
+$('#closeHelp').onclick = () => {
+  $('#helpModal').classList.remove('show');
+};
+
+$('#startRange').oninput = () => {
+  $('#startOut').textContent =
+    (+$('#startRange').value).toFixed(1) + 's';
+
+  if(+\(('#startRange').value >= +\)('#endRange').value){
+    $('#startRange').value =
+      Math.max(0,+$('#endRange').value - 0.1);
+  }
+};
+
+$('#endRange').oninput = () => {
+  $('#endOut').textContent =
+    (+$('#endRange').value).toFixed(1) + 's';
+
+  if(+\(('#endRange').value <= +\)('#startRange').value){
+    $('#endRange').value =
+      +$('#startRange').value + 0.1;
+  }
+};
+
+renderLibrary();
+
+})();
+</script>
+</body>
+</html>
